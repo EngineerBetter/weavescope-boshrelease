@@ -1,21 +1,19 @@
----
-jq/jq:
-  object_id: 11d29960-8aec-4f83-afed-9b58657a8f5c
-  sha: d8e36831c3c94bb58be34dd544f44a6c6cb88568
-  size: 3027945
-scope/scope:
-  object_id: 07278190-4ca8-45c8-82c3-3040a32558a1
-  sha: 39ac8741ed3b3508195706dc0c4b5ba80aa02851
-  size: 43428136
-scope-garden/scope-garden:
-  object_id: 35e26257-17dd-4146-a930-4391aef4c1f7
-  sha: 0df2fbc9f2c72625b92c673daa7a5dad461e735a
-  size: 5718833
-scope-bosh/scope-bosh:
-  object_id: e6ea2a00-de03-45a9-9061-b9a0d589821a
-  sha: 0a1995d8d4ef6ef0fefcc3f2028f9722cde6e9fe
-  size: 5232459
 go/go1.8.linux-amd64.tar.gz:
+  size: 89803580
   object_id: b6fa4d9e-eb35-4f4e-aff2-7ecb423c0f04
   sha: a93fe8fc245e3554f956bc823f30ef4eb23c2068
-  size: 89803580
+jq/jq:
+  size: 3027945
+  object_id: 11d29960-8aec-4f83-afed-9b58657a8f5c
+  sha: d8e36831c3c94bb58be34dd544f44a6c6cb88568
+scope-bosh/scope-bosh:
+  size: 5232459
+  object_id: e6ea2a00-de03-45a9-9061-b9a0d589821a
+  sha: 0a1995d8d4ef6ef0fefcc3f2028f9722cde6e9fe
+scope-garden/scope-garden:
+  size: 5718833
+  object_id: 35e26257-17dd-4146-a930-4391aef4c1f7
+  sha: 0df2fbc9f2c72625b92c673daa7a5dad461e735a
+scope/scope:
+  size: 37453928
+  sha: a3370628938c12de85784337597074fbd46edefd
