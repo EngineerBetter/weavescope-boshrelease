@@ -17,32 +17,18 @@ case $1 in
     export GARDEN_ADDR=<%= p('weave.scope.probe.garden.addr') %>
     export GARDEN_REFRESH_INTERVAL=<%= p('weave.scope.probe.garden.refresh_interval') %>
 
-    # cf config
-    <% if_p('weave.scope.probe.cf.api_url') do |url| %>
-    export CF_API_URL=<%= url %>
+    # concourse config
+    <% if_p('weave.scope.probe.concourse.atc_url') do |url| %>
+    export ATC_URL=<%= url %>
     <% end %>
 
-    <% if_p('weave.scope.probe.cf.username') do |username| %>
-    export CF_USERNAME=<%= username %>
+    <% if_p('weave.scope.probe.concourse.atc_username') do |username| %>
+    export ATC_USERNAME=<%= username %>
     <% end %>
 
-    <% if_p('weave.scope.probe.cf.password') do |password| %>
-    export CF_PASSWORD=<%= password %>
+    <% if_p('weave.scope.probe.concourse.atc_password') do |password| %>
+    export ATC_PASSWORD=<%= password %>
     <% end %>
-
-    <% if_p('weave.scope.probe.cf.client_id') do |id| %>
-    export CF_CLIENT_ID=<%= id %>
-    <% end %>
-
-    <% if_p('weave.scope.probe.cf.client_secret') do |secret| %>
-    export CF_CLIENT_SECRET=<%= secret %>
-    <% end %>
-
-    <% if p('weave.scope.probe.cf.skip_ssl_verify') %>
-    export CF_SKIP_SSL_VERIFY=true
-    <% end %>
-
-    export CF_REFRESH_INTERVAL=<%= p('weave.scope.probe.cf.refresh_interval') %>
 
     mkdir -p $RUN_DIR $LOG_DIR ${PLUGINS_ROOT}
     chown -R vcap:vcap $RUN_DIR $LOG_DIR ${PLUGINS_ROOT}

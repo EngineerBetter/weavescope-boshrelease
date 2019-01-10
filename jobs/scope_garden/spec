@@ -21,19 +21,9 @@ properties:
   weave.scope.probe.garden.refresh_interval:
     description: Interval for fetching conatiner details from Garden
     default: 5s
-  weave.scope.probe.cf.api_url:
-    description: Cloud Foundry API URL
-  weave.scope.probe.cf.username:
-    description: Cloud Foundry username to fetch apps
-  weave.scope.probe.cf.password:
-    description: Cloud Foundry password to fetch apps
-  weave.scope.probe.cf.client_id:
-    description: Cloud Foundry client ID to fetch apps
-  weave.scope.probe.cf.client_secret:
-    description: Cloud Foundry client secret to fetch apps
-  weave.scope.probe.cf.skip_ssl_verify:
-    description: Skip SSL cert validation when fetching apps from CF
-    default: false
-  weave.scope.probe.cf.refresh_interval:
-    description: Interval for fetching apps from CF
-    default: 5s
+  weave.scope.probe.concourse.atc_url:
+    description: Concourse ATC URL, including protocol, hostname and port
+  weave.scope.probe.concourse.atc_username:
+    description: Concourse username to fetch apps
+  weave.scope.probe.concourse.atc_password:
+    description: Concourse password to fetch apps
