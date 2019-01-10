@@ -28,6 +28,6 @@ addons:
               network: tcp
               addr: 127.0.0.1:7777
             concourse:
-              atc_url: https://api.bosh-lite.com
+              atc_url: http://10.244.15.2:8080
               atc_username: admin
               atc_password: admin
