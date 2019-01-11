@@ -49,6 +49,8 @@ jobs:
   - get: weave-scope-release
     trigger: true
   - put: ci-tf
+    params:
+      env_name: whevs
 
 - name: create-release
   plan:
