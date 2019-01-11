@@ -10,7 +10,7 @@ resource "aws_s3_bucket" "ci" {
 
 resource "aws_s3_bucket" "blobstore" {
   bucket        = "weave-scope-blobstore"
-  acl           = "private"
+  acl           = "public-read"
   force_destroy = true
 
   versioning {
