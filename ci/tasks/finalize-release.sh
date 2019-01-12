@@ -8,7 +8,7 @@ cp version/number bumped-version/number
 export ROOT_PATH=$PWD
 PROMOTED_REPO=$PWD/final-weave-scope-release
 
-export DEV_RELEASE_PATH=$ROOT_PATH/candidate-release/bosh*.tgz
+export DEV_RELEASE_PATH=$ROOT_PATH/candidate-release/*.tgz
 
 git config --global user.email "ci@localhost"
 git config --global user.name "CI Bot"
