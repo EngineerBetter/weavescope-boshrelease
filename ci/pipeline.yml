@@ -13,6 +13,15 @@ resources:
     uri: git@github.com:EngineerBetter/weavescope-boshrelease.git
     branch: master
     private_key: ((github_deployment_key))
+    ignore_paths:
+    - releases/
+- name: weave-scope-release-push
+  type: git
+  source:
+    uri: git@github.com:EngineerBetter/weavescope-boshrelease.git
+    branch: master
+    private_key: ((github_deployment_key))
+
 - name: version
   type: semver
   source:
@@ -83,7 +92,7 @@ jobs:
     - put: version
       params:
         bump: minor
-    - put: weave-scope-release
+    - put: weave-scope-release-push
       params:
         rebase: true
         repository: final-weave-scope-release
