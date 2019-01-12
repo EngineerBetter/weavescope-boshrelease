@@ -18,7 +18,7 @@ resource "aws_s3_bucket" "blobstore" {
   }
 }
 
-resource "aws_s3_bucket" "blobstore" {
+resource "aws_s3_bucket" "releases" {
   bucket        = "weave-scope-releases"
   acl           = "public-read"
   force_destroy = true
