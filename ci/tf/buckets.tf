@@ -17,3 +17,13 @@ resource "aws_s3_bucket" "blobstore" {
     enabled = true
   }
 }
+
+resource "aws_s3_bucket" "blobstore" {
+  bucket        = "weave-scope-releases"
+  acl           = "public-read"
+  force_destroy = true
+
+  versioning {
+    enabled = true
+  }
+}

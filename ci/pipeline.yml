@@ -18,7 +18,7 @@ resources:
   source:
     key: version
     << : &candidate-s3-creds
-      bucket: ((candidate_release_bucket))
+      bucket: weave-scope-releases
       access_key_id: ((concourse_ci_s3_access_key))
       secret_access_key: ((concourse_ci_s3_secret_key))
 - name: candidate-release
