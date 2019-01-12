@@ -1,20 +1,20 @@
 go/go1.8.linux-amd64.tar.gz:
   size: 89803580
-  object_id: b6fa4d9e-eb35-4f4e-aff2-7ecb423c0f04
+  object_id: 4a10c659-ed0c-4e4f-6ada-7a902b864ee5
   sha: a93fe8fc245e3554f956bc823f30ef4eb23c2068
 jq/jq:
   size: 3027945
-  object_id: 11d29960-8aec-4f83-afed-9b58657a8f5c
+  object_id: 9ac90dab-86e9-45e4-710c-bed2ff3dca14
   sha: d8e36831c3c94bb58be34dd544f44a6c6cb88568
 scope-bosh/scope-bosh:
   size: 5232459
-  object_id: e6ea2a00-de03-45a9-9061-b9a0d589821a
+  object_id: 0892f2c8-2aac-49ae-600a-fc82c0ff7173
   sha: 0a1995d8d4ef6ef0fefcc3f2028f9722cde6e9fe
 scope-garden/scope-garden:
   size: 5718833
-  object_id: 35e26257-17dd-4146-a930-4391aef4c1f7
+  object_id: 2868713a-1d16-42d8-57aa-66fbf4f66aa7
   sha: 0df2fbc9f2c72625b92c673daa7a5dad461e735a
 scope/scope:
   size: 37453928
-  object_id: dc2607fa-11ad-41de-7f7f-0d4f0b2cd118
+  object_id: 7c0e3420-ac15-4ae5-5ad3-0d96ab4ff134
   sha: a3370628938c12de85784337597074fbd46edefd
