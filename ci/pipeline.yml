@@ -102,6 +102,7 @@ jobs:
     - aggregate:
       - get: weave-scope-release
         passed: [create-final-release]
+        trigger: true
       - get: final-release
         passed: [create-final-release]
         trigger: true
