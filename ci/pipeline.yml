@@ -80,17 +80,33 @@ jobs:
       params:
         file: "release/weave-scope-dev-release.tgz"
 
-- name: finalize-release
+- name: create-final-release
   serial_groups:
     - version
   plan:
     - aggregate:
       - get: weave-scope-release
         passed: [create-release]
-      - get: candidate-release
-        passed: [create-release]
         trigger: true
       - get: version
+    - task: create-final-release
+      file: weave-scope-release/ci/tasks/create-final.yml
+    - put: final-release
+      params:
+        file: "final-release/weave-scope-final-release-(.*).tgz"
+
+- name: finalize-release
+  serial_groups:
+    - version
+  plan:
+    - aggregate:
+      - get: weave-scope-release
+        passed: [create-final-release]
+      - get: final-release
+        passed: [create-final-release]
+        trigger: true
+      - get: version
+        passed: [create-final-release]
     - task: finalize-release
       file: weave-scope-release/ci/tasks/finalize-release.yml
       params:
@@ -100,23 +116,6 @@ jobs:
       params:
         rebase: true
         repository: final-weave-scope-release
-
-- name: create-final-release
-  serial_groups:
-    - version
-  plan:
-    - aggregate:
-      - get: weave-scope-release
-        passed: [finalize-release]
-      - get: version
-    - task: create-final-release
-      file: weave-scope-release/ci/tasks/create-final.yml
-      params:
-        BLOBSTORE_ACCESS_KEY_ID: ((concourse_ci_s3_access_key))
-        BLOBSTORE_SECRET_ACCESS_KEY: ((concourse_ci_s3_secret_key))
-    - put: final-release
-      params:
-        file: "final-release/weave-scope-final-release-(.*).tgz"
     - put: version
       params:
         bump: patch

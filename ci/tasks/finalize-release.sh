@@ -8,7 +8,7 @@ cp version/number bumped-version/number
 export ROOT_PATH=$PWD
 PROMOTED_REPO=$PWD/final-weave-scope-release
 
-export DEV_RELEASE_PATH=$ROOT_PATH/candidate-release/*.tgz
+export FINAL_RELEASE_PATH=$ROOT_PATH/final-release/*.tgz
 
 git config --global user.email "ci@localhost"
 git config --global user.name "CI Bot"
@@ -38,7 +38,7 @@ blobstore:
     secret_access_key: "$BLOBSTORE_SECRET_ACCESS_KEY"
 EOF
 
-  bosh finalize-release --version $VERSION $DEV_RELEASE_PATH
+  bosh finalize-release --version $VERSION $FINAL_RELEASE_PATH
 
   bosh int \
     manifests/bosh-lite/runtime-config.yml \
