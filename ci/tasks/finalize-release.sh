@@ -50,7 +50,6 @@ EOF
   mv manifests/bosh-lite/new-runtime-config.yml \
      manifests/bosh-lite/runtime-config.yml
 
-
   git add -A
   git status
 

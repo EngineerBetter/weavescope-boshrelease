@@ -38,6 +38,11 @@ resources:
   source:
     versioned_file: "weave-scope-dev-release.tgz"
     << : *candidate-s3-creds
+- name: final-release
+  type: s3
+  source:
+    regexp: "weave-scope-final-release-(.*).tgz"
+    << : *candidate-s3-creds
 - name: ci-tf
   type: terraform
   source:
@@ -91,10 +96,27 @@ jobs:
       params:
         BLOBSTORE_ACCESS_KEY_ID: ((concourse_ci_s3_access_key))
         BLOBSTORE_SECRET_ACCESS_KEY: ((concourse_ci_s3_secret_key))
-    - put: version
-      params:
-        bump: patch
     - put: weave-scope-release-push
       params:
         rebase: true
         repository: final-weave-scope-release
+
+- name: create-final-release
+  serial_groups:
+    - version
+  plan:
+    - aggregate:
+      - get: weave-scope-release
+        passed: [finalize-release]
+      - get: version
+    - task: create-final-release
+      file: weave-scope-release/ci/tasks/create-final.yml
+      params:
+        BLOBSTORE_ACCESS_KEY_ID: ((concourse_ci_s3_access_key))
+        BLOBSTORE_SECRET_ACCESS_KEY: ((concourse_ci_s3_secret_key))
+    - put: final-release
+      params:
+        file: "final-release/weave-scope-final-release-(.*).tgz"
+    - put: version
+      params:
+        bump: patch

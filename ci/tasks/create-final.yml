@@ -1,0 +1,17 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: engineerbetter/pcf-ops
+    tag: latest
+
+inputs:
+  - name: weave-scope-release
+
+outputs:
+  - name: final-release
+
+run:
+  path: weave-scope-release/ci/tasks/create-final.sh
