@@ -93,7 +93,7 @@ jobs:
       file: weave-scope-release/ci/tasks/create-final.yml
     - put: final-release
       params:
-        file: "final-release/weave-scope-final-release-(.*).tgz"
+        file: final-release/weave-scope-final-release-*.tgz
 
 - name: finalize-release
   serial_groups:
