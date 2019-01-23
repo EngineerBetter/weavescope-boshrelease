@@ -93,7 +93,7 @@ jobs:
         BLOBSTORE_SECRET_ACCESS_KEY: ((concourse_ci_s3_secret_key))
     - put: version
       params:
-        bump: minor
+        bump: patch
     - put: weave-scope-release-push
       params:
         rebase: true
