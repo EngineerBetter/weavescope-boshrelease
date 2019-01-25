@@ -79,6 +79,7 @@ jobs:
     - put: candidate-release
       params:
         file: "release/weave-scope-dev-release.tgz"
+        acl: public-read
 
 - name: create-final-release
   serial_groups:
@@ -94,6 +95,7 @@ jobs:
     - put: final-release
       params:
         file: final-release/weave-scope-final-release-*.tgz
+        acl: public-read
 
 - name: finalize-release
   serial_groups:
@@ -120,3 +122,11 @@ jobs:
     - put: version
       params:
         bump: patch
+
+- name: bump-minor
+  serial_groups:
+    - version
+  plan:
+    - put: version
+      params:
+        bump: minor
