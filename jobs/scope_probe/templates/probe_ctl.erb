@@ -49,6 +49,7 @@ case $1 in
     --weave=false \
     --no-app \
     --probe.conntrack=false \
+    --probe.no-controls=<%= p('weave.scope.probe.no-controls') %> \
     ${TARGET} \
       >>  $LOG_DIR/probe.stdout.log \
       2>> $LOG_DIR/probe.stderr.log

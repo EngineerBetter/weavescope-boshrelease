@@ -20,6 +20,9 @@ properties:
     description: Target address for probe reports.
   weave.scope.probe.service_token:
     description: Service token for Weave Cloud
+  weave.scope.probe.no-controls:
+    description: Disable controls, such as terminal access through Scope UI
+    default: true
   weave.scope.probe.plugins.root:
     description: Scope probe plugins root
     default: /var/vcap/data/scope/plugins
