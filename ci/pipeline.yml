@@ -92,6 +92,9 @@ jobs:
       - get: version
     - task: create-final-release
       file: weave-scope-release/ci/tasks/create-final.yml
+      params:
+        BLOBSTORE_ACCESS_KEY_ID: ((concourse_ci_s3_access_key))
+        BLOBSTORE_SECRET_ACCESS_KEY: ((concourse_ci_s3_secret_key))
     - put: final-release
       params:
         file: final-release/weave-scope-final-release-*.tgz

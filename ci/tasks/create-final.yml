@@ -14,5 +14,9 @@ inputs:
 outputs:
   - name: final-release
 
+params:
+  BLOBSTORE_ACCESS_KEY_ID: replace-me
+  BLOBSTORE_SECRET_ACCESS_KEY: replace-me
+
 run:
   path: weave-scope-release/ci/tasks/create-final.sh
