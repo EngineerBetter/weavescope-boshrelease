@@ -14,6 +14,7 @@ resources:
     branch: master
     private_key: ((github_deployment_key))
     ignore_paths:
+    - .final_builds/
     - releases/
     - manifests/
     - docs/
