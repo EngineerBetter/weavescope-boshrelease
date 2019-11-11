@@ -17,7 +17,7 @@ bosh upload-release
 
 # Add and test weave scope app
 bosh -d weave-scope deploy \
-  "$PWD/ci/manifests/weave-scope.yml"
+  "$PWD/ci/manifests/scope-app.yml"
 
 # Check that weave scope app has been deployed
 SCOPE_HOST="$(bosh -d weave-scope instances | grep running | awk '{ print $4 }')"
