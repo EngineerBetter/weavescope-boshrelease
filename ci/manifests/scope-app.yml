@@ -1,0 +1,34 @@
+---
+name: weave-scope
+
+instance_groups:
+  - name: weave-scope-app
+    azs: [z1, z2, z3]
+    instances: 1
+    jobs:
+      - name: weave-scope-app
+        release: weave-scope
+        provides:
+          weave_scope_app:
+            as: weave_scope_app
+            shared: true
+    vm_type: default
+    stemcell: xenial-latest
+    networks:
+      - name: default
+
+update:
+  canary_watch_time: 1000-180000
+  max_in_flight: 1
+  serial: true
+  update_watch_time: 1000-180000
+  canaries: 1
+
+stemcells:
+  - alias: xenial-latest
+    name: bosh-warden-boshlite-ubuntu-xenial-go_agent
+    version: latest
+
+releases:
+  - name: weave-scope
+    version: latest
