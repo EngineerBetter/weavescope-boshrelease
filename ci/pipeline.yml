@@ -7,130 +7,135 @@ resource_types:
     tag: "0.11.10"
 
 resources:
-- name: weave-scope-release
-  type: git
-  source:
-    uri: git@github.com:EngineerBetter/weavescope-boshrelease.git
-    branch: master
-    private_key: ((github_deployment_key))
-    ignore_paths:
-    - .final_builds/
-    - releases/
-    - manifests/
-    - docs/
-- name: weave-scope-release-push
-  type: git
-  source:
-    uri: git@github.com:EngineerBetter/weavescope-boshrelease.git
-    branch: master
-    private_key: ((github_deployment_key))
+  - name: weave-scope-release
+    icon: github-circle
+    type: git
+    source:
+      uri: git@github.com:EngineerBetter/weavescope-boshrelease.git
+      branch: weavescope-ci
+      private_key: ((github_private_key))
+      ignore_paths:
+        - .final_builds/
+        - releases/
+        - manifests/
+        - docs/
 
-- name: version
-  type: semver
-  source:
-    key: version
-    << : &candidate-s3-creds
-      bucket: weave-scope-releases
-      access_key_id: ((concourse_ci_s3_access_key))
-      secret_access_key: ((concourse_ci_s3_secret_key))
-      region_name: eu-central-1
-- name: candidate-release
-  type: s3
-  source:
-    versioned_file: "weave-scope-dev-release.tgz"
-    << : *candidate-s3-creds
-- name: final-release
-  type: s3
-  source:
-    regexp: "weave-scope-final-release-(.*).tgz"
-    << : *candidate-s3-creds
-- name: ci-tf
-  type: terraform
-  source:
-    terraform_source: weave-scope-release/ci/tf/
-    storage:
-      bucket: weave-scope-ci
-      bucket_path: /terraform/
-      access_key_id: ((concourse_ci_s3_access_key))
-      secret_access_key: ((concourse_ci_s3_secret_key))
-      region_name: eu-central-1
-      server_side_encryption: AES256
-    env:
-      AWS_ACCESS_KEY_ID: ((concourse_ci_s3_access_key))
-      AWS_SECRET_ACCESS_KEY: ((concourse_ci_s3_secret_key))
-      AWS_DEFAULT_REGION: eu-central-1
+  - name: concourse-bosh-deployment
+    icon: github-circle
+    type: git
+    source:
+      uri: https://github.com/concourse/concourse-bosh-deployment.git
+
+  - name: weave-scope-release-push
+    type: git
+    source:
+      uri: git@github.com:EngineerBetter/weavescope-boshrelease.git
+      branch: master
+      private_key: ((github_private_key))
+
+  - name: version
+    type: semver
+    source:
+      key: version
+      << : &candidate-s3-creds
+        bucket: weave-scope-releases
+        access_key_id: ((concourse_ci_s3_access_key))
+        secret_access_key: ((concourse_ci_s3_secret_key))
+        region_name: eu-central-1
+  - name: candidate-release
+    type: s3
+    source:
+      versioned_file: "weave-scope-dev-release.tgz"
+      << : *candidate-s3-creds
+  - name: final-release
+    type: s3
+    source:
+      regexp: "weave-scope-final-release-(.*).tgz"
+      << : *candidate-s3-creds
+  - name: ci-tf
+    type: terraform
+    source:
+      terraform_source: weave-scope-release/ci/tf/
+      storage:
+        bucket: weave-scope-ci
+        bucket_path: /terraform/
+        access_key_id: ((concourse_ci_s3_access_key))
+        secret_access_key: ((concourse_ci_s3_secret_key))
+        region_name: eu-central-1
+        server_side_encryption: AES256
+      env:
+        AWS_ACCESS_KEY_ID: ((concourse_ci_s3_access_key))
+        AWS_SECRET_ACCESS_KEY: ((concourse_ci_s3_secret_key))
+        AWS_DEFAULT_REGION: eu-central-1
 
 jobs:
-- name: create-buckets
-  serial: true
-  plan:
-  - get: weave-scope-release
-    trigger: true
-  - put: ci-tf
-    params:
-      env_name: whevs
-
-- name: create-release
-  plan:
+  - name: create-buckets
+    serial: true
+    plan:
     - get: weave-scope-release
       trigger: true
-      passed: [create-buckets]
-    - task: create
-      file: weave-scope-release/ci/tasks/create-candidate.yml
-    - put: candidate-release
+    - put: ci-tf
       params:
-        file: "release/weave-scope-dev-release.tgz"
-        acl: public-read
+        env_name: whevs
 
-- name: create-final-release
-  serial_groups:
-    - version
-  plan:
-    - aggregate:
-      - get: weave-scope-release
-        passed: [create-release]
-        trigger: true
-      - get: version
-    - task: create-final-release
-      file: weave-scope-release/ci/tasks/create-final.yml
-      params:
-        BLOBSTORE_ACCESS_KEY_ID: ((concourse_ci_s3_access_key))
-        BLOBSTORE_SECRET_ACCESS_KEY: ((concourse_ci_s3_secret_key))
-    - put: final-release
-      params:
-        file: final-release/weave-scope-final-release-*.tgz
-        acl: public-read
+  - name: create-release
+    plan:
+      - in_parallel:
+          - get: weave-scope-release
+            trigger: true
+          - get: concourse-bosh-deployment
+      - task: create
+        privileged: true
+        file: weave-scope-release/ci/tasks/smoke-test-local.yml
+  - name: create-final-release
+    serial_groups:
+      - version
+    plan:
+      - in_parallel:
+        - get: weave-scope-release
+          passed: [create-release]
+          trigger: true
+        - get: version
+      - task: create-final-release
+        file: weave-scope-release/ci/tasks/create-final.yml
+        params:
+          BLOBSTORE_ACCESS_KEY_ID: ((concourse_ci_s3_access_key))
+          BLOBSTORE_SECRET_ACCESS_KEY: ((concourse_ci_s3_secret_key))
+      - put: final-release
+        params:
+          file: final-release/weave-scope-final-release-*.tgz
+          acl: public-read
 
-- name: finalize-release
-  serial_groups:
-    - version
-  plan:
-    - aggregate:
-      - get: weave-scope-release
-        passed: [create-final-release]
-        trigger: true
-      - get: final-release
-        passed: [create-final-release]
-        trigger: true
-      - get: version
-        passed: [create-final-release]
-    - task: finalize-release
-      file: weave-scope-release/ci/tasks/finalize-release.yml
-      params:
-        BLOBSTORE_ACCESS_KEY_ID: ((concourse_ci_s3_access_key))
-        BLOBSTORE_SECRET_ACCESS_KEY: ((concourse_ci_s3_secret_key))
-    - put: weave-scope-release-push
-      params:
-        rebase: true
-        repository: final-weave-scope-release
-    - put: version
-      params:
-        bump: patch
+  - name: finalize-release
+    serial_groups:
+      - version
+    plan:
+      - in_parallel:
+        - get: weave-scope-release
+          passed: [create-final-release]
+          trigger: true
+        - get: final-release
+          passed: [create-final-release]
+          trigger: true
+        - get: version
+          passed: [create-final-release]
+      - task: finalize-release
+        file: weave-scope-release/ci/tasks/finalize-release.yml
+        params:
+          BLOBSTORE_ACCESS_KEY_ID: ((concourse_ci_s3_access_key))
+          BLOBSTORE_SECRET_ACCESS_KEY: ((concourse_ci_s3_secret_key))
+      - put: weave-scope-release-push
+        params:
+          rebase: true
+          repository: final-weave-scope-release
+      - put: version
+        params:
+          bump: patch
 
-- name: bump-minor
-  serial_groups:
-    - version
-  plan:
-    - put: version
-      params:
-        bump: minor
+  - name: bump-minor
+    serial_groups:
+      - version
+    plan:
+      - put: version
+        params:
+          bump: minor

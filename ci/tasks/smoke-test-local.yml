@@ -8,6 +8,7 @@ image_resource:
 
 inputs:
   - name: weave-scope-release
+  - name: concourse-bosh-deployment
 
 run:
   path: weave-scope-release/ci/tasks/smoke-test-local.sh
