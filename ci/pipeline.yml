@@ -1,10 +1,10 @@
 ---
 resource_types:
-- name: terraform
-  type: docker-image
-  source:
-    repository: ljfranklin/terraform-resource
-    tag: "0.11.10"
+  - name: terraform
+    type: docker-image
+    source:
+      repository: ljfranklin/terraform-resource
+      tag: "0.11.10"
 
 resources:
   - name: weave-scope-release
@@ -20,20 +20,8 @@ resources:
         - manifests/
         - docs/
 
-  - name: concourse-bosh-deployment
-    icon: github-circle
-    type: git
-    source:
-      uri: https://github.com/concourse/concourse-bosh-deployment.git
-
-  - name: weave-scope-release-push
-    type: git
-    source:
-      uri: git@github.com:EngineerBetter/weavescope-boshrelease.git
-      branch: master
-      private_key: ((github_private_key))
-
   - name: version
+    icon: tag
     type: semver
     source:
       key: version
@@ -42,17 +30,16 @@ resources:
         access_key_id: ((concourse_ci_s3_access_key))
         secret_access_key: ((concourse_ci_s3_secret_key))
         region_name: eu-central-1
-  - name: candidate-release
-    type: s3
-    source:
-      versioned_file: "weave-scope-dev-release.tgz"
-      << : *candidate-s3-creds
+
   - name: final-release
+    icon: file-cloud
     type: s3
     source:
       regexp: "weave-scope-final-release-(.*).tgz"
       << : *candidate-s3-creds
+
   - name: ci-tf
+    icon: terraform
     type: terraform
     source:
       terraform_source: weave-scope-release/ci/tf/
@@ -78,64 +65,66 @@ jobs:
       params:
         env_name: whevs
 
-  - name: create-release
+  - name: unit-test-candidate-release
     plan:
-      - in_parallel:
-          - get: weave-scope-release
-            trigger: true
-          - get: concourse-bosh-deployment
-      - task: create
-        privileged: true
-        file: weave-scope-release/ci/tasks/smoke-test-local.yml
+      - get: weave-scope-release
+        trigger: true
+        passed: [create-buckets]
+      - task: create-candidate-release
+        file: weave-scope-release/ci/tasks/create-candidate.yml
+
+  - name: acceptance-test-candidate-release
+    plan:
+      - get: weave-scope-release
+        passed: [unit-test-candidate-release]
+        trigger: true
+      - task: create-candidate-release
+        file: weave-scope-release/ci/tasks/create-candidate.yml
+
   - name: create-final-release
+    serial: true
     serial_groups:
       - version
     plan:
       - in_parallel:
-        - get: weave-scope-release
-          passed: [create-release]
-          trigger: true
-        - get: version
+          - get: weave-scope-release
+            passed: [acceptance-test-candidate-release]
+            trigger: true
+          - get: version
+            params:
+              bump: patch
       - task: create-final-release
         file: weave-scope-release/ci/tasks/create-final.yml
         params:
           BLOBSTORE_ACCESS_KEY_ID: ((concourse_ci_s3_access_key))
           BLOBSTORE_SECRET_ACCESS_KEY: ((concourse_ci_s3_secret_key))
+      - task: commit-release-changes
+        file: weave-scope-release/ci/tasks/commit-release-changes.yml
       - put: final-release
         params:
           file: final-release/weave-scope-final-release-*.tgz
           acl: public-read
-
-  - name: finalize-release
-    serial_groups:
-      - version
-    plan:
-      - in_parallel:
-        - get: weave-scope-release
-          passed: [create-final-release]
-          trigger: true
-        - get: final-release
-          passed: [create-final-release]
-          trigger: true
-        - get: version
-          passed: [create-final-release]
-      - task: finalize-release
-        file: weave-scope-release/ci/tasks/finalize-release.yml
+      - put: weave-scope-release
         params:
-          BLOBSTORE_ACCESS_KEY_ID: ((concourse_ci_s3_access_key))
-          BLOBSTORE_SECRET_ACCESS_KEY: ((concourse_ci_s3_secret_key))
-      - put: weave-scope-release-push
-        params:
-          rebase: true
           repository: final-weave-scope-release
       - put: version
         params:
-          bump: patch
+          file: version/version
 
   - name: bump-minor
+    serial: true
     serial_groups:
       - version
     plan:
       - put: version
         params:
           bump: minor
+
+  - name: bump-major
+    serial: true
+    serial_groups:
+      - version
+    plan:
+      - put: version
+        params:
+          bump: major

@@ -8,17 +8,11 @@ image_resource:
     tag: latest
 
 inputs:
-  - name: weave-scope-release
-  - name: final-release
+  - name: updated-weave-scope-release
   - name: version
 
 outputs:
-  - name: bumped-version
   - name: final-weave-scope-release
-
-params:
-  BLOBSTORE_ACCESS_KEY_ID: replace-me
-  BLOBSTORE_SECRET_ACCESS_KEY: replace-me
 
 run:
   path: weave-scope-release/ci/tasks/finalize-release.sh

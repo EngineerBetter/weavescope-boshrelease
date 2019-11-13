@@ -2,7 +2,7 @@
 
 set -eux
 
-cd weave-scope-release
+
 export BOSH_NON_INTERACTIVE=true
 
 start-bosh
@@ -12,10 +12,11 @@ source /tmp/local-bosh/director/env
 bosh upload-stemcell --sha1 1a18280689eb6b4a459c7924a16cbf9a7ca76043 \
   https://bosh.io/d/stemcells/bosh-warden-boshlite-ubuntu-xenial-go_agent?v=621.5
 
-bosh create-release
-bosh upload-release
+cd candidate-release
+bosh upload-release weave-scope-dev-release.tgz
 
 # Add and test weave scope app
+cd ../weave-scope-release
 bosh -d weave-scope deploy \
   "$PWD/ci/manifests/scope-app.yml"
 

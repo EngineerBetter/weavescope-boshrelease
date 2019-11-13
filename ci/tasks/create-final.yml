@@ -12,6 +12,7 @@ inputs:
   - name: version
 
 outputs:
+  - name: updated-weave-scope-release
   - name: final-release
 
 params:

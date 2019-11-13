@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-set -e
+set -eux
 
-export ROOT_PATH=$PWD
+VERSION=$(cat .git/short_ref)
 
-cd weave-scope-release
-
-bosh create-release --tarball=../release/weave-scope-dev-release.tgz --timestamp-version --force
+bosh create-release --tarball=../candidate-release/weave-scope-dev-release.tgz --force --version="${VERSION}"
