@@ -15,4 +15,4 @@ outputs:
 
 run:
   dir: weave-scope-release
-  path: weave-scope-release/ci/tasks/create-candidate.sh
+  path: ci/tasks/create-candidate.sh

@@ -39,7 +39,7 @@ resources:
       << : *candidate-s3-creds
 
   - name: ci-tf
-    icon: terraform
+    icon: earth
     type: terraform
     source:
       terraform_source: weave-scope-release/ci/tf/
