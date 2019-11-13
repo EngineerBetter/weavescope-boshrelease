@@ -15,4 +15,4 @@ outputs:
   - name: final-weave-scope-release
 
 run:
-  path: weave-scope-release/ci/tasks/finalize-release.sh
+  path: weave-scope-release/ci/tasks/commit-release-changes.sh
