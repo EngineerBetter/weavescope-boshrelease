@@ -7,6 +7,13 @@ resource_types:
       tag: "0.11.10"
 
 resources:
+  - name: concourse-bosh-deployment
+    icon: github-circle
+    type: git
+    source:
+      uri: https://github.com/concourse/concourse-bosh-deployment.git
+      tag_filter: v4.2.2
+
   - name: weave-scope-release
     icon: github-circle
     type: git
@@ -83,11 +90,16 @@ jobs:
 
   - name: acceptance-test-candidate-release
     plan:
-      - get: weave-scope-release
-        passed: [unit-test-candidate-release]
-        trigger: true
+      - in_parallel:
+        - get: weave-scope-release
+          passed: [unit-test-candidate-release]
+          trigger: true
+        - get: concourse-bosh-deployment
       - task: create-candidate-release
         file: weave-scope-release/ci/tasks/create-candidate.yml
+      - task: smoke-test-local
+        file: weave-scope-release/ci/tasks/smoke-test-local.yml
+        privileged: true
 
   - name: create-final-release
     serial: true

@@ -2,7 +2,6 @@
 
 set -eux
 
-
 export BOSH_NON_INTERACTIVE=true
 
 start-bosh
@@ -45,5 +44,3 @@ curl -k -o fly  "http://$CONCOURSE_IP:8080/api/v1/cli?arch=amd64&platform=linux"
 chmod +x fly
 
 ./fly -t local login -c "http://$CONCOURSE_IP:8080" -u admin -p admin
-
-
