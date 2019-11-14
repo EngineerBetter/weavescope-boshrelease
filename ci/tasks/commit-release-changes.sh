@@ -12,9 +12,6 @@ pushd updated-weave-scope-release
   tag_annotation="Final release ${VERSION} tagged via concourse"
   git tag -a "${tag_name}" -m "${tag_annotation}"
 
-  git checkout master
-  git status
-
   cat >> config/private.yml <<EOF
   ---
   blobstore:
