@@ -89,7 +89,7 @@ jobs:
       - task: create-candidate-release
         file: weave-scope-release/ci/tasks/create-candidate.yml
 
-  - name: create-final-patch-release
+  - name: create-final-release
     serial: true
     serial_groups:
       - version
@@ -101,49 +101,34 @@ jobs:
           - put: version
             params:
               bump: patch
-      - &create-final-release
-        task: create-final-release
+      - task: create-final-release
         file: weave-scope-release/ci/tasks/create-final.yml
         params:
           BLOBSTORE_ACCESS_KEY_ID: ((concourse_ci_s3_access_key))
           BLOBSTORE_SECRET_ACCESS_KEY: ((concourse_ci_s3_secret_key))
-      - &upload-final-release
-        put: final-release
+      - put: final-release
         params:
           file: final-release/weave-scope-final-release-*.tgz
           acl: public-read
-      - &push-final-release
-        put: weave-scope-release-push
+      - put: weave-scope-release-push
         params:
           repository: final-weave-scope-release
           rebase: true
 
-  - name: create-final-minor-release
+  - name: bump-minor
     serial: true
     serial_groups:
       - version
     plan:
-      - in_parallel:
-          - get: weave-scope-release
-            passed: [acceptance-test-candidate-release]
-          - put: version
-            params:
-              bump: minor
-      - *create-final-release
-      - *upload-final-release
-      - *push-final-release
+     - put: version
+       params:
+         bump: minor
 
-  - name: create-final-major-release
+  - name: bump-major
     serial: true
     serial_groups:
       - version
     plan:
-      - in_parallel:
-          - get: weave-scope-release
-            passed: [acceptance-test-candidate-release]
-          - put: version
-            params:
-              bump: major
-      - *create-final-release
-      - *upload-final-release
-      - *push-final-release
+     - put: version
+       params:
+         bump: major
