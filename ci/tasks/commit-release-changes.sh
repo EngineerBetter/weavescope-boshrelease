@@ -25,7 +25,7 @@ pushd updated-weave-scope-release
   git add -A
   git status
 
-  git commit -m "Adding final release $VERSION via concourse"
+  git commit -m "[ci skip] Adding final release $VERSION via concourse"
 popd
 
 mv updated-weave-scope-release final-weave-scope-release
