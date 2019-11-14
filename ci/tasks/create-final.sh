@@ -40,7 +40,7 @@ EOF
   git add -A
   git status
 
-  git commit -m "[ci skip] Adding final release $VERSION via concourse"
+  git commit -m "Adding final release $VERSION via concourse"
 popd
 
 git clone weave-scope-release final-weave-scope-release
