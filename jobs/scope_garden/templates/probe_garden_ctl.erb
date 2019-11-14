@@ -10,7 +10,7 @@ case $1 in
   start)
     # probe config
     export HOSTNAME=`cat /var/vcap/bosh/spec.json | /var/vcap/packages/scope-jq/jq -r '.job.name + "/" + (.index | tostring)'`
-    export PLUGINS_ROOT=<%= link('scope_probe').p('weave.scope.probe.plugins.root') %>
+    export PLUGINS_ROOT=<%= p('weave.scope.probe.plugins.root') %>
 
     # garden config
     export GARDEN_NETWORK=<%= p('weave.scope.probe.garden.network') %>

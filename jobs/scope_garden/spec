@@ -9,13 +9,14 @@ packages:
 - scope-jq
 
 consumes:
-- name: scope_probe
-  type: scope_probe
 - name: concourse_web
   type: web
   optional: true
 
 properties:
+  weave.scope.probe.plugins.root:
+    description: Scope probe plugins root
+    default: /var/vcap/data/scope/plugins
   weave.scope.probe.garden.network:
     description: Garden network type (unix or tcp)
     default: unix

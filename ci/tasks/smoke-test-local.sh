@@ -23,6 +23,12 @@ bosh -d weave-scope deploy \
 SCOPE_HOST="$(bosh -d weave-scope instances | grep running | awk '{ print $4 }')"
 curl -L "${SCOPE_HOST}:4040" | grep "<title>Weave Scope</title>"
 
+bosh update-runtime-config manifests/bosh-lite/runtime-config.yml \
+  --var plugin_root="/var/vcap/data/scope/plugins" \
+  --var atc_password=admin \
+  --var atc_username=admin \
+  --var version="$(cat .git/short_ref)"
+
 cd ../concourse-bosh-deployment/cluster
 bosh deploy -d concourse concourse.yml \
  -l ../versions.yml \

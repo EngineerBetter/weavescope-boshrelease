@@ -1,36 +1,39 @@
 addons:
-- name: scope-probe
-  jobs:
-  - name: scope_probe
-    release: weave-scope
-    consumes:
-      weave_scope_app:
-        deployment: weave-scope
-        from: weave_scope_app
-- name: scope-garden
-  jobs:
-  - name: scope_garden
-    release: weave-scope
-    consumes:
-      scope_probe:
-        from: scope_probe
-      concourse_web:
-        deployment: concourse
-        from: web
-    properties:
-      weave:
-        scope:
-          probe:
-            concourse:
-              atc_password: ((atc_password))
-              atc_username: ((atc_username))
-            garden:
-              addr: 127.0.0.1:7777
-              network: tcp
-    include:
-      jobs:
-      - name: garden
-        release: garden-runc
+  - name: scope-probe
+    jobs:
+      - name: scope_probe
+        release: weave-scope
+        consumes:
+          weave_scope_app:
+            deployment: weave-scope
+            from: weave_scope_app
+        properties:
+          weave.scope.probe.plugins.root: ((plugin_root))
+  - name: scope-garden
+    jobs:
+      - name: scope_garden
+        release: weave-scope
+        consumes:
+          scope_probe:
+            from: scope_probe
+          concourse_web:
+            deployment: concourse
+            from: web
+        properties:
+          weave:
+            scope:
+              probe:
+                plugins.root: ((plugin_root))
+                concourse:
+                  atc_password: ((atc_password))
+                  atc_username: ((atc_username))
+                garden:
+                  addr: 127.0.0.1:7777
+                  network: tcp
+        include:
+          jobs:
+            - name: garden
+              release: garden-runc
 releases:
-- name: weave-scope
-  version: ((version))
+  - name: weave-scope
+    version: ((version))
