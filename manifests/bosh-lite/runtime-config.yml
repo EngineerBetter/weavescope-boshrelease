@@ -28,4 +28,4 @@ addons:
   name: scope-garden
 releases:
 - name: weave-scope
-  version: 0.17.17
+  version: 0.17.18
