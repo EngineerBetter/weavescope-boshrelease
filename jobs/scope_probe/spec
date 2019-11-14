@@ -15,6 +15,12 @@ consumes:
   type: http
   optional: true
 
+provides:
+- name: scope_probe
+  type: scope_probe
+  properties:
+  - weave.scope.probe.plugins.root
+
 properties:
   weave.scope.probe.target_addr:
     description: Target address for probe reports.

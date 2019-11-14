@@ -10,7 +10,7 @@ case $1 in
   start)
     # probe config
     export HOSTNAME=`cat /var/vcap/bosh/spec.json | /var/vcap/packages/scope-jq/jq -r '.job.name + "/" + (.index | tostring)'`
-    export PLUGINS_ROOT=<%= p('weave.scope.probe.plugins.root') %>
+    export PLUGINS_ROOT=<%= link('scope_probe').p('weave.scope.probe.plugins.root') %>
 
     # garden config
     export GARDEN_NETWORK=<%= p('weave.scope.probe.garden.network') %>
@@ -18,8 +18,8 @@ case $1 in
     export GARDEN_REFRESH_INTERVAL=<%= p('weave.scope.probe.garden.refresh_interval') %>
 
     # concourse config
-    <% if_p('weave.scope.probe.concourse.atc_url') do |url| %>
-    export ATC_URL=<%= url %>
+    <% if_link('concourse_web') do |link| %>
+    export ATC_URL=http://<%= link.address %>:<%= link.p('bind_port') %>
     <% end %>
 
     <% if_p('weave.scope.probe.concourse.atc_username') do |username| %>
