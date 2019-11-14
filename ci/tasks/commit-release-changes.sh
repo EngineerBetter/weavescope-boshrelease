@@ -28,4 +28,4 @@ pushd updated-weave-scope-release
   git commit -m "Adding final release $VERSION via concourse"
 popd
 
-git clone updated-weave-scope-release final-weave-scope-release
+mv updated-weave-scope-release final-weave-scope-release

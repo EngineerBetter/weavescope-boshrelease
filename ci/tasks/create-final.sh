@@ -21,4 +21,4 @@ EOF
     "--tarball=../final-release/weave-scope-final-release-${VERSION}.tgz"
 popd
 
-git clone weave-scope-release updated-weave-scope-release
+mv weave-scope-release updated-weave-scope-release
