@@ -20,6 +20,14 @@ resources:
         - manifests/
         - docs/
 
+  - name: weave-scope-release-push
+    icon: github-circle
+    type: git
+    source:
+      uri: git@github.com:EngineerBetter/weavescope-boshrelease.git
+      branch: weavescope-ci
+      private_key: ((github_private_key))
+
   - name: version
     icon: tag
     type: semver
@@ -104,7 +112,7 @@ jobs:
         params:
           file: final-release/weave-scope-final-release-*.tgz
           acl: public-read
-      - put: weave-scope-release
+      - put: weave-scope-release-push
         params:
           repository: final-weave-scope-release
       - put: version
