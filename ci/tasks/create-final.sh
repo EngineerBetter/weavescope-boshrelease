@@ -20,6 +20,7 @@ EOF
 
   bosh create-release \
     --final \
+    --version="${VERSION}" \
     "--tarball=../final-release/weave-scope-final-release-${VERSION}.tgz"
 
 
