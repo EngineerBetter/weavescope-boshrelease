@@ -89,7 +89,7 @@ jobs:
       - task: create-candidate-release
         file: weave-scope-release/ci/tasks/create-candidate.yml
 
-  - name: create-final-release
+  - name: create-final-patch-release
     serial: true
     serial_groups:
       - version
@@ -101,36 +101,54 @@ jobs:
           - get: version
             params:
               bump: patch
-      - task: create-final-release
+      - &create-final-release
+        task: create-final-release
         file: weave-scope-release/ci/tasks/create-final.yml
         params:
           BLOBSTORE_ACCESS_KEY_ID: ((concourse_ci_s3_access_key))
           BLOBSTORE_SECRET_ACCESS_KEY: ((concourse_ci_s3_secret_key))
-      - put: final-release
+      - &upload-final-release
+        put: final-release
         params:
           file: final-release/weave-scope-final-release-*.tgz
           acl: public-read
-      - put: weave-scope-release-push
+      - &push-final-release
+        put: weave-scope-release-push
         params:
           repository: final-weave-scope-release
-      - put: version
+      - &update-version
+        put: version
         params:
           file: version/version
 
-  - name: bump-minor
+  - name: create-final-minor-release
     serial: true
     serial_groups:
       - version
     plan:
-      - put: version
-        params:
-          bump: minor
+      - in_parallel:
+          - get: weave-scope-release
+            passed: [acceptance-test-candidate-release]
+          - get: version
+            params:
+              bump: minor
+      - *create-final-release
+      - *upload-final-release
+      - *push-final-release
+      - *update-version
 
-  - name: bump-major
+  - name: create-final-major-release
     serial: true
     serial_groups:
       - version
     plan:
-      - put: version
-        params:
-          bump: major
+      - in_parallel:
+          - get: weave-scope-release
+            passed: [acceptance-test-candidate-release]
+          - get: version
+            params:
+              bump: major
+      - *create-final-release
+      - *upload-final-release
+      - *push-final-release
+      - *update-version
