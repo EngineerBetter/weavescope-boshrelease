@@ -1,4 +1,0 @@
----
-- type: replace
-  path: /releases/name=weave-scope/version
-  value: ((version))
