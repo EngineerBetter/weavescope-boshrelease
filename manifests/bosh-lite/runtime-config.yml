@@ -14,11 +14,9 @@ addons:
       - name: scope_garden
         release: weave-scope
         consumes:
-          scope_probe:
-            from: scope_probe
           concourse_web:
             deployment: concourse
-            from: web
+            from: atc
         properties:
           weave:
             scope:

@@ -10,7 +10,7 @@ packages:
 
 consumes:
 - name: concourse_web
-  type: web
+  type: atc
   optional: true
 
 properties:
